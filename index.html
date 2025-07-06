@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pengumuman Kelulusan SPMB SMK 5 Kepahiang</title>
+  <style>
+    /* (CSS sama persis seperti sebelumnya, dipersingkat di sini) */
+    /* ... (paste your existing <style> section here) ... */
+  </style>
+</head>
+<body>
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="container">
+    <img src="https://i.imgur.com/gCpaQjN.png" alt="Logo Sekolah" class="logo" />
+    <h2>SMK Negeri 5 Kepahiang</h2>
+    <h2>Pengumuman Kelulusan SPMB</h2>
+
+    <div id="formInput">
+      <p>Masukkan TOKEN PENDAFTARAN Anda</p>
+      <input type="text" id="token" placeholder="Contoh: SMK50907001" />
+      <button id="cekBtn" onclick="checkGraduation()">Cek Kelulusan</button>
+    </div>
+
+    <div id="pesanError"></div>
+    <div id="loading" style="display:none; text-align:center;">Memeriksa data...</div>
+    <div id="result"></div>
+    <button id="keluarBtn" onclick="keluar()">Keluar</button>
+  </div>
+  <footer>&copy; 2025 - SMK Negeri 5 Kepahiang</footer>
+
+  <script>
+    let dataList = [];
+
+    fetch('https://USERNAME.github.io/FOLDER/data_kelulusan_2025.csv')
+      .then(response => response.text())
+      .then(text => {
+        const rows = text.split("\n").slice(1);
+        dataList = rows.map(row => {
+          const cols = row.split(",");
+          return {
+            token: cols[0]?.trim(),
+            nisn: cols[1]?.trim(),
+            nama: cols[2]?.trim(),
+            asal: cols[3]?.trim(),
+            diterima: cols[4]?.trim(),
+            status: cols[5]?.trim()
+          };
+        });
+      });
+
+    function checkGraduation() {
+      const token = document.getElementById("token").value.trim();
+      const loading = document.getElementById("loading");
+      const resultDiv = document.getElementById("result");
+      const cekBtn = document.getElementById("cekBtn");
+      const keluarBtn = document.getElementById("keluarBtn");
+      const pesanError = document.getElementById("pesanError");
+      const formInput = document.getElementById("formInput");
+
+      if (!token) {
+        pesanError.textContent = "Silakan masukkan TOKEN PENDAFTARAN terlebih dahulu.";
+        pesanError.style.display = "block";
+        return;
+      } else {
+        pesanError.style.display = "none";
+      }
+
+      loading.style.display = "block";
+      resultDiv.style.display = "none";
+      cekBtn.style.display = "none";
+
+      const found = dataList.find(d => d.token === token);
+      setTimeout(() => showResult(found), 500); // simulate loading
+    }
+
+    function showResult(data) {
+      const resultDiv = document.getElementById("result");
+      const loading = document.getElementById("loading");
+      const keluarBtn = document.getElementById("keluarBtn");
+      const formInput = document.getElementById("formInput");
+
+      loading.style.display = "none";
+
+      if (!data) {
+        resultDiv.innerHTML = "<p style='color:red; font-weight:bold;'>Data tidak ditemukan. Pastikan TOKEN benar.</p>";
+        resultDiv.style.display = "block";
+        keluarBtn.style.display = "block";
+        return;
+      }
+
+      formInput.style.display = "none";
+
+      const statusLulus = data.status.toLowerCase() === "lulus";
+      resultDiv.innerHTML = `
+        <h3 style="text-align:center;">🎓 BUKTI KELULUSAN</h3>
+        <p><strong>Nama:</strong> ${data.nama}</p>
+        <p><strong>NISN:</strong> ${data.nisn}</p>
+        <p><strong>Asal Sekolah:</strong> ${data.asal}</p>
+        <p><strong>Di Jurusan:</strong> ${data.diterima}</p>
+        <p><strong>Status:</strong> <span style="color:${statusLulus ? 'green' : 'red'}; font-weight:bold;">${data.status}</span></p>
+      `;
+      resultDiv.style.display = "block";
+      keluarBtn.style.display = "block";
+
+      if (statusLulus) {
+        const ucapan = `Selamat kepada ${data.nama}! Anda dinyatakan LULUS dan diterima di SMK Negeri 5 Kepahiang, jurusan ${data.diterima}`;
+        speakText(ucapan);
+        startFireworks();
+      }
+    }
+
+    function keluar() {
+      document.getElementById("token").value = "";
+      document.getElementById("result").style.display = "none";
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("keluarBtn").style.display = "none";
+      document.getElementById("cekBtn").style.display = "block";
+      document.getElementById("pesanError").style.display = "none";
+      document.getElementById("formInput").style.display = "block";
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'id-ID';
+        utterance.volume = 1;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    // 🎆 Kembang api tetap sama
+    function startFireworks() {
+      const canvas = document.getElementById('fireworksCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#ff1744', '#f50057', '#d500f9', '#651fff', '#3d5afe', '#00b0ff', '#00e5ff', '#1de9b6', '#00e676', '#76ff03', '#ffea00', '#ff9100'];
+
+      function createParticle(x, y) {
+        const count = 80;
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x, y,
+            angle: Math.random() * 2 * Math.PI,
+            speed: Math.random() * 5 + 2,
+            radius: Math.random() * 4 + 2,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: 1
+          });
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+          p.x += Math.cos(p.angle) * p.speed;
+          p.y += Math.sin(p.angle) * p.speed;
+          p.alpha -= 0.015;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+          if (p.alpha <= 0) particles.splice(i, 1);
+        });
+        ctx.globalAlpha = 1;
+        if (particles.length > 0) requestAnimationFrame(animate);
+      }
+
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+          const y = Math.random() * canvas.height * 0.5 + canvas.height * 0.1;
+          createParticle(x, y);
+          animate();
+        }, i * 600);
+      }
+    }
+  </script>
+</body>
+</html>
