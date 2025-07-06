@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - Kelulusan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f7fa;
+      margin: 0; padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    .login-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0d47a1;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .container {
+      display: none;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #0d47a1;
+      color: white;
+    }
+    .edit-btn { background: #4caf50; color: white; }
+    .delete-btn { background: #f44336; color: white; }
+    .add-btn, .download-btn, .logout-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .add-btn { background: #ff9800; color: white; }
+    .download-btn { background: #2196f3; color: white; }
+    .logout-btn { background: #d32f2f; color: white; float: right; }
+    input[type="text"] { width: 100%; padding: 4px; }
+  </style>
+</head>
+<body>
+  <div class="login-box" id="loginBox">
+    <h2>Login Admin</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="loginAdmin()">Login</button>
+    <p id="loginError" style="color:red; display:none;">Username atau password salah!</p>
+  </div>
+
+  <div class="container" id="adminPanel">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>Panel Admin Kelulusan</h2>
+      <button class="logout-btn" onclick="logoutAdmin()">🔒 Logout</button>
+    </div>
+    <button class="add-btn" onclick="addRow()">+ Tambah Siswa</button>
+    <button class="download-btn" onclick="downloadCSV()">⬇️ Download CSV</button>
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>NISN</th>
+          <th>Nama</th>
+          <th>Asal Sekolah</th>
+          <th>Jurusan</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const USERNAME = "admin";
+    const PASSWORD = "smk5kph";
+
+    function loginAdmin() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const error = document.getElementById("loginError");
+      if (user === USERNAME && pass === PASSWORD) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        renderTable();
+      } else {
+        error.style.display = "block";
+      }
+    }
+
+    function logoutAdmin() {
+      if (confirm("Yakin ingin logout?")) {
+        document.getElementById("loginBox").style.display = "block";
+        document.getElementById("adminPanel").style.display = "none";
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+      }
+    }
+
+    let data = [
+      { token: 'SMK50907001', nisn: '1234567890', nama: 'Ageng Saputra', asal: 'SMPN 1 Kepahiang', diterima: 'RPL', status: 'Lulus' },
+      { token: 'SMK50907002', nisn: '1234567891', nama: 'Budi Prasetyo', asal: 'SMPN 2 Kepahiang', diterima: 'TKJ', status: 'Tidak Lulus' }
+    ];
+
+    function renderTable() {
+      const tbody = document.querySelector('#dataTable tbody');
+      tbody.innerHTML = '';
+      data.forEach((siswa, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="text" value="${siswa.token}" onchange="updateField(${index}, 'token', this.value)"></td>
+          <td><input type="text" value="${siswa.nisn}" onchange="updateField(${index}, 'nisn', this.value)"></td>
+          <td><input type="text" value="${siswa.nama}" onchange="updateField(${index}, 'nama', this.value)"></td>
+          <td><input type="text" value="${siswa.asal}" onchange="updateField(${index}, 'asal', this.value)"></td>
+          <td><input type="text" value="${siswa.diterima}" onchange="updateField(${index}, 'diterima', this.value)"></td>
+          <td><input type="text" value="${siswa.status}" onchange="updateField(${index}, 'status', this.value)"></td>
+          <td>
+            <button class="delete-btn" onclick="deleteRow(${index})">Hapus</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function updateField(index, key, value) {
+      data[index][key] = value;
+    }
+
+    function deleteRow(index) {
+      if (confirm("Yakin ingin menghapus siswa ini?")) {
+        data.splice(index, 1);
+        renderTable();
+      }
+    }
+
+    function addRow() {
+      data.push({ token: '', nisn: '', nama: '', asal: '', diterima: '', status: '' });
+      renderTable();
+    }
+
+    function downloadCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,token,nisn,nama,asal,diterima,status\n";
+      data.forEach(d => {
+        csvContent += `${d.token},${d.nisn},${d.nama},${d.asal},${d.diterima},${d.status}\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "data_kelulusan.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
