@@ -4,11 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pengumuman Kelulusan SPMB SMK 5 Kepahiang</title>
- <style>
-    * {
-      box-sizing: border-box;
-    }
-
+  <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -20,7 +17,6 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
     .container {
       max-width: 420px;
       width: 90%;
@@ -33,27 +29,19 @@
       z-index: 1;
       position: relative;
     }
-
     canvas#fireworksCanvas {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       z-index: 0;
     }
-
     img.logo {
       max-width: 80px;
       display: block;
       margin: 20px auto 10px;
     }
-
-    h2 {
-      margin: 0 0 10px;
-    }
-
+    h2 { margin: 0 0 10px; }
     input[type="text"], button {
       width: 100%;
       padding: 12px;
@@ -62,20 +50,17 @@
       font-size: 16px;
       border: 1px solid #ccc;
     }
-
     #cekBtn {
       background-color: #0d47a1;
       color: #fff;
       font-weight: bold;
     }
-
     #keluarBtn {
       background-color: #d32f2f;
       color: #fff;
       display: none;
       font-weight: bold;
     }
-
     #result {
       display: none;
       margin-top: 20px;
@@ -84,7 +69,6 @@
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-
     #pesanError {
       display: none;
       color: red;
@@ -92,7 +76,6 @@
       text-align: center;
       margin-top: 10px;
     }
-
     footer {
       font-size: 12px;
       text-align: center;
@@ -124,7 +107,7 @@
   <script>
     let dataList = [];
 
-    fetch('https://USERNAME.github.io/FOLDER/data_kelulusan_2025.csv')
+    fetch('https://tusmknegeri5kph.github.io/PengumumanSPMB/data_kelulusan_2025.csv')
       .then(response => response.text())
       .then(text => {
         const rows = text.split("\n").slice(1);
@@ -163,7 +146,7 @@
       cekBtn.style.display = "none";
 
       const found = dataList.find(d => d.token === token);
-      setTimeout(() => showResult(found), 500); // simulate loading
+      setTimeout(() => showResult(found), 500);
     }
 
     function showResult(data) {
@@ -223,7 +206,6 @@
       }
     }
 
-    // 🎆 Kembang api tetap sama
     function startFireworks() {
       const canvas = document.getElementById('fireworksCanvas');
       const ctx = canvas.getContext('2d');
@@ -234,8 +216,7 @@
       const colors = ['#ff1744', '#f50057', '#d500f9', '#651fff', '#3d5afe', '#00b0ff', '#00e5ff', '#1de9b6', '#00e676', '#76ff03', '#ffea00', '#ff9100'];
 
       function createParticle(x, y) {
-        const count = 80;
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < 80; i++) {
           particles.push({
             x, y,
             angle: Math.random() * 2 * Math.PI,
