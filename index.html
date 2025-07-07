@@ -172,14 +172,14 @@
         <p><strong>Nama:</strong> ${data.nama}</p>
         <p><strong>NISN:</strong> ${data.nisn}</p>
         <p><strong>Asal Sekolah:</strong> ${data.asal}</p>
-        <p><strong>Di Jurusan:</strong> ${data.diterima}</p>
+        <p><strong>Lulus Administrasi:</strong> ${data.diterima}</p>
         <p><strong>Status:</strong> <span style="color:${statusLulus ? 'green' : 'red'}; font-weight:bold;">${data.status}</span></p>
       `;
       resultDiv.style.display = "block";
       keluarBtn.style.display = "block";
 
       if (statusLulus) {
-        const ucapan = `Selamat kepada ${data.nama}! Anda dinyatakan LULUS dan diterima di SMK Negeri 5 Kepahiang, jurusan ${data.diterima}`;
+        const ucapan = `Selamat kepada ${data.nama}! Anda dinyatakan LULUS administrasi di ${data.diterima}`;
         speakText(ucapan);
         startFireworks();
       }
