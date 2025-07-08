@@ -257,3 +257,38 @@
   </script>
 </body>
 </html>
+    // ===== HITUNG MUNDUR SAMPAI BESOK JAM 00:00 =====
+    function startCountdown() {
+      const countdownDiv = document.getElementById("countdown");
+      const cekBtn = document.getElementById("cekBtn");
+      const now = new Date();
+      const besok = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 9, 0, 0);
+
+      function updateCountdown() {
+        const now = new Date();
+        const sisa = besok - now;
+
+        if (sisa <= 0) {
+          countdownDiv.textContent = "Waktu pengecekan sudah berakhir.";
+          cekBtn.disabled = true;
+          cekBtn.style.backgroundColor = "#ccc";
+          return;
+        }
+
+        const jam = String(Math.floor((sisa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+        const menit = String(Math.floor((sisa % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        const detik = String(Math.floor((sisa % (1000 * 60)) / 1000)).padStart(2, '0');
+
+        countdownDiv.textContent = `Sisa waktu pengecekan: ${jam}:${menit}:${detik}`;
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    }
+
+    window.onload = () => {
+      startCountdown();
+    };
+  </script>
+</body>
+</html>
