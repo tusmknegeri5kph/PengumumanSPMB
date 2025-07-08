@@ -91,6 +91,9 @@
     <h2>SMK Negeri 5 Kepahiang</h2>
     <h2>Pengumuman Kelulusan SPMB</h2>
 
+    <!-- Countdown waktu pengecekan -->
+    <div id="countdown" style="font-weight:bold; font-size: 16px; margin-bottom: 15px; color: #d32f2f;"></div>
+
     <div id="formInput">
       <p>Masukkan TOKEN PENDAFTARAN Anda</p>
       <input type="text" id="token" placeholder="Contoh: SMK50907001" />
@@ -254,24 +257,41 @@
         }, i * 600);
       }
     }
-  </script>
-</body>
-</html>
-    // ===== HITUNG MUNDUR SAMPAI BESOK JAM 00:00 =====
+
+    // FUNGSI TAMBAHAN
+    function aturAksesPengecekan() {
+      const cekBtn = document.getElementById("cekBtn");
+      const now = new Date();
+      const mulai = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 9, 0, 0); // Besok jam 09:00 WIB
+
+      if (now < mulai) {
+        cekBtn.disabled = true;
+        cekBtn.style.opacity = 0.5;
+        cekBtn.style.cursor = "not-allowed";
+        cekBtn.innerText = "Belum Bisa Cek (Tunggu...)";
+      } else {
+        cekBtn.disabled = false;
+        cekBtn.innerText = "Cek Kelulusan";
+        cekBtn.style.opacity = 1;
+        cekBtn.style.cursor = "pointer";
+      }
+    }
+
     function startCountdown() {
       const countdownDiv = document.getElementById("countdown");
       const cekBtn = document.getElementById("cekBtn");
+
       const now = new Date();
-      const besok = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 9, 0, 0);
+      const target = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 9, 0, 0); // Besok jam 09:00 WIB
 
       function updateCountdown() {
         const now = new Date();
-        const sisa = besok - now;
+        const sisa = target - now;
 
         if (sisa <= 0) {
-          countdownDiv.textContent = "Waktu pengecekan sudah berakhir.";
-          cekBtn.disabled = true;
-          cekBtn.style.backgroundColor = "#ccc";
+          countdownDiv.textContent = "Pengecekan kelulusan SUDAH DIBUKA!";
+          aturAksesPengecekan();
+          clearInterval(timer);
           return;
         }
 
@@ -279,15 +299,16 @@
         const menit = String(Math.floor((sisa % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
         const detik = String(Math.floor((sisa % (1000 * 60)) / 1000)).padStart(2, '0');
 
-        countdownDiv.textContent = `Sisa waktu pengecekan: ${jam}:${menit}:${detik}`;
+        countdownDiv.textContent = `Pengecekan dimulai dalam: ${jam}:${menit}:${detik}`;
       }
 
       updateCountdown();
-      setInterval(updateCountdown, 1000);
+      const timer = setInterval(updateCountdown, 1000);
     }
 
     window.onload = () => {
       startCountdown();
+      aturAksesPengecekan();
     };
   </script>
 </body>
