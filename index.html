@@ -87,7 +87,6 @@
     <h2>SMK Negeri 5 Kepahiang</h2>
     <h2>Pengumuman Kelulusan SPMB</h2>
 
-    <!-- Countdown -->
     <div id="countdown" style="font-weight:bold; font-size: 16px; margin-bottom: 15px;"></div>
 
     <!-- Form input disembunyikan dulu -->
@@ -222,7 +221,7 @@
           return;
         }
 
-        const jam = String(Math.floor((sisa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+        const jam = String(Math.floor(sisa / (1000 * 60 * 60))).padStart(2, '0');
         const menit = String(Math.floor((sisa % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
         const detik = String(Math.floor((sisa % (1000 * 60)) / 1000)).padStart(2, '0');
 
